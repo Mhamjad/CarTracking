@@ -46,6 +46,7 @@ class Ransac:
         counter=0
         NormalizedFlowPoints=[]
         n=0
+        Flow=[]
         while(n < len(FlowPoints)-1):
             n_magnitude = np.linalg.norm(FlowPoints[n])
             NormalizedFlowPoints.append(np.divide(FlowPoints[n],n_magnitude))
@@ -67,7 +68,7 @@ class Ransac:
             c=0
             for j in product:
                # print('Dot Product ',j)
-                if(j>0.9999):
+                if(j>0.777):
 
                     tempInlairs.append(i)
                     temp.append(FlowPoints[c])
@@ -91,7 +92,7 @@ class Ransac:
             counter =counter+1
 
 
-        return TFlow
+        return Flow
 
 
     def TakeMagnitude(self,Points):

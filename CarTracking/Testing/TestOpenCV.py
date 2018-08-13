@@ -6,6 +6,7 @@ import os
 import math
 from cv2 import imshow
 from numpy import imag
+import scipy.io
 import time
 from VideoProcessing.VideoProcessor import VideoProcessor
 from VideoProcessing.FBError import FBError
@@ -14,7 +15,7 @@ Images = []
 FinalPoints = []
 
 ImagesNames = []
-path  = '/home/isam/HazenWork-Hasnain/Sample/'
+path  = '/home/isam/HazenWork-Hasnain/Sample3/'
 i=0
 k=30
 B = [1640,1700,183,211]
@@ -22,24 +23,14 @@ obj = VideoProcessor()
 obj2 = FBError()
 ImagesNames = obj.GetImagesName(path)
 
-FinalPoints = obj2.FlowEstimation(ImagesNames,25)
+FinalPoints = obj2.FlowEstimation(ImagesNames,5)
+#Test = obj.GetFinalMatrix2(FinalPoints)
+#Test = np.array(Test)
+#test = np.array(FinalPoints[len(FinalPoints)-1])
+#scipy.io.savemat('/home/isam/HazenWork-Hasnain/TrackingGoodPoints/Experiment1/GoodPoints.mat', {'GoodPoints': Test})
 
 
 
-print('length', len(FinalPoints))
-#Images = obj.GetFrames(ImagesNames,i,k)
-#while(i<k):
-
-#cv2.rectangle(Images[1],(1640,183),(1700,211),(255,0,0),5)
-#cv2.circle(Images[1],(1640,183), 3, (0,0,255),-1)
-#cv2.imshow('Testing',Images[1])
- #   img = cv2.imread(path + str(i) + '.jpg')
-#    print(img)
- #   if img is not None:
-  #      Images.append(img)
-   # i=i+1
-
-#print(len(Images))
 print("--- %s seconds ---" % (time.time() - start_time))
 
 #cv2.imshow('test',Images[1])
