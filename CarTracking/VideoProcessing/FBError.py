@@ -283,11 +283,7 @@ class FBError:
 
         return TrackedGoodPoints
 
-    def ResversedTracking(self,Images,GoodPoints):
-        GoodPoints = np.array(GoodPoints)
-        p1 = self.FindForwardPoints(Images,GoodPoints)
-        p2 = self.FindBackWardPoints(Images,p1)
-        return p2
+
 
 
     def GoodPoints(self,FirstImagePoints,FarwordPoints,BackwardPoints,Images, Threshold, des_phi=0.3, method ='ssd'):
