@@ -23,11 +23,14 @@ obj = VideoProcessor()
 obj2 = FBError()
 ImagesNames = obj.GetImagesName(path)
 
-FinalPoints = obj2.FlowEstimation(ImagesNames,5)
-#Test = obj.GetFinalMatrix2(FinalPoints)
-#Test = np.array(Test)
+FinalPoints = obj2.FlowEstimation(ImagesNames,12)
+#FinalPoints= np.array(FinalPoints)
+
+Test = obj.GetFinalMatrix2(FinalPoints,ImagesNames)
+Test = np.array(Test)
+
 #test = np.array(FinalPoints[len(FinalPoints)-1])
-#scipy.io.savemat('/home/isam/HazenWork-Hasnain/TrackingGoodPoints/Experiment1/GoodPoints.mat', {'GoodPoints': Test})
+scipy.io.savemat('/home/isam/HazenWork-Hasnain/TrackingGoodPoints/Experiment1/GoodPoints.mat', {'GoodPoints': Test})
 
 
 

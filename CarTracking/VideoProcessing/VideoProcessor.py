@@ -201,34 +201,36 @@ class VideoProcessor:
         return FinalMatrix
 
 
-    def GetFinalMatrix2(self,TrackedPoints):
+    def GetFinalMatrix2(self,TrackedPoints,TotalImages):
         a=0
         sum=0
         FinalMatrix=[]
         while(a<=len(TrackedPoints)-1):
             sum=sum+len(TrackedPoints[a][0])
+            print('sum',sum)
             a=a+1
-        FinalMatrix = [0] * 2*(len(TrackedPoints))*sum
+
+        FinalMatrix = [0] * 2*(len(TotalImages))*sum
         #print(len(FinalMatrix))
         FinalMatrix = np.array(FinalMatrix)
-        l = 2*(len(TrackedPoints))
+        l = 2*(len(TotalImages))
         print('l',len(TrackedPoints))
         FinalMatrix=FinalMatrix.reshape((l,sum))
+        print('final matrix', FinalMatrix.shape)
 
         b=0
         cstart=0
         c=0
-        while(b<=len(FinalMatrix)-1): #len(TrackedPoints)-1):
+        while(c<=len(TrackedPoints)-1): #len(TrackedPoints)-1):
             rend=len(TrackedPoints[c])+b
             cend = len(TrackedPoints[c][0])+cstart
             #print('Tracked Points',TrackedPoints[b])
 
             test =TrackedPoints[c]
-
             print('RStart',b,'Rend',rend,'Cstart',cstart, 'Cend' ,cend)
-            #print(test.shape)
-            #print(FinalMatrix[b:rend,cstart:cend].shape)
-            FinalMatrix[b:rend,cstart:cend] =test  #print('Get Final Matrix', FinalMatrix[b:rend,cstart:cend]) #= TrackedPoints[b][:,:]
+            print('test',len(test), len(test[0]))
+            print('b',b)
+            FinalMatrix[b:rend,cstart:cend]  =test  #print('Get Final Matrix', FinalMatrix[b:rend,cstart:cend]) #= TrackedPoints[b][:,:
             cstart=cend
             b=b+2
             c=c+1
@@ -273,7 +275,7 @@ class VideoProcessor:
                 Images = cv2.circle(Image,(Points[a][0],Points[a][1]), 1, (0,0,255), 1)
                 a=a+1
 
-            newpath = '/home/isam/HazenWork-Hasnain/Sample2_GdPts/25Frame/'+str(number)+'/'
+            newpath = '/home/isam/HazenWork-Hasnain/TrackingGoodPoints/Experiment1/Results/'+str(number)+'/'
             if not os.path.exists(newpath):
                 os.makedirs(newpath)
             name = newpath + str(Counter) + '.png'

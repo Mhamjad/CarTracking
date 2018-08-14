@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-
+from numpy.distutils.fcompiler import none
 
 from VideoProcessing.VideoProcessor import VideoProcessor
 from VideoProcessing.Ransac import Ransac
@@ -41,26 +41,57 @@ class FBError:
 
             print('Working of counter ' , ImageCounter)
             Images = obj.GetFrames(TotalImages,ImageCounter,IntervalSize,  method = 'forward')
-            print('Images',Images)
+            #print('Images',Images)
 
-            FirstImagePoints = obj.GetPoints(Box, Images[0], method='grid')
+            FirstImagePoints = obj.GetPoints(Box, Images[0], method='gCorners')
             FirstImagePoints = np.array(FirstImagePoints)
 
 
-            OpticalFlowForward,TrackedFirstImagePoints = self.FindForwardPoints2(Images,FirstImagePoints)
+
+            if(len(FirstImagePoints)!= 0 or FirstImagePoints != None):
+                OpticalFlowForward,TrackedFirstImagePoints = self.FindForwardPoints2(Images,FirstImagePoints)
+
+
+            else:
+                return FinalPoints
+
+
             #obj.DrawCirclesofFarwordPts(TrackedFirstImagePoints,TotalImages[ImageCounter],ImageCounter)
 
-            OpticalFlowBackward,TrackedFirstImagePoints = self.FindBackWardPoints2(Images,OpticalFlowForward,TrackedFirstImagePoints)
+            if(len(OpticalFlowForward)!= 0 or OpticalFlowForward != None):
 
-            GoodPoints = self.GoodPoints(TrackedFirstImagePoints,OpticalFlowForward,OpticalFlowBackward,Images,2.0,method='ssd')
+                OpticalFlowBackward,TrackedFirstImagePoints = self.FindBackWardPoints2(Images,OpticalFlowForward,TrackedFirstImagePoints)
+            else:
+                return FinalPoints
+
+
+            if(len(OpticalFlowBackward)!= 0 or OpticalFlowBackward != None):
+
+                GoodPoints = self.GoodPoints(TrackedFirstImagePoints,OpticalFlowForward,OpticalFlowBackward,Images,2,method='ssd')
+                print('len of good points',len(GoodPoints))
+            else:
+                return FinalPoints
             #print('Len of GoodPoints ', len(GoodPoints))
+
 
             #if(len(GoodPoints)==0):
              #   GoodPoints =OpticalFlowForward
             GoodPoints=np.array(GoodPoints)
-            TrackedPts  =self.FindForwardPoints(Images,GoodPoints,ImageCounter)
+
+            if(len(GoodPoints)!= 0 or GoodPoints != None):
+
+                TrackedPts  =self.FindForwardPoints(Images,GoodPoints,ImageCounter)
+                TrackedPts1=np.array(TrackedPts)
+                #print('shape',TrackedPts1.shape)
+            else:
+                #TrackedPts=obj.CreateGoodPointList(TrackedFirstImagePoints)
+                #FinalPoints.append(TrackedPts)
+
+                return FinalPoints
+
+
+
             FinalPoints.append(TrackedPts)
-            ArrFinalPoints= np.array(FinalPoints)
 
 
 
@@ -154,12 +185,12 @@ class FBError:
 
 
             previousImg = cv2.cvtColor(Images[a], cv2.COLOR_BGR2GRAY)
-            print('previousImg',previousImg)
+            #print('previousImg',previousImg)
             nextImg = cv2.cvtColor(Images[next], cv2.COLOR_BGR2GRAY)
             p1, st, err = cv2.calcOpticalFlowPyrLK(previousImg,nextImg, PreviousPoints.astype(np.float32), None, **lk_params)
             if(c==len(Images)-2):
                 #print('Points before Zero Forward Flow' , len(p1))
-                p1,FirstImagePoints = self.CalculateZeroFlow(p1,FirstImagePoints,3)
+                p1,FirstImagePoints = self.CalculateZeroFlow(p1,FirstImagePoints,4)
                 #print('Points after Zero Forward Flow' , len(p1))
                 p1=np.array(p1)
                 c=0
@@ -259,66 +290,7 @@ class FBError:
         return p2
 
 
-    def GoodPoints(self,FirstImagePoints,FarwordPoints,BackwardPoints,Images, Threshold, des_phi=0.4, method ='ssd'):
-
-        if(method=='dotproduct'):
-            j=0
-            varGoodPoints =[]
-            varFarwordPoints=[]
-            while (j<len(BackwardPoints)):
-                dist = np.linalg.norm(BackwardPoints[j]-FirstImagePoints[j])
-                if(dist>Threshold):
-
-                        #print(dist)
-                    dist
-                else:
-                        #print(dist)
-                    varGoodPoints.append(FirstImagePoints[j])
-                    varFarwordPoints.append(FarwordPoints[j])
-
-                j=j+1
-
-
-            orb = cv2.ORB_create()
-            FirstGrayImage = cv2.cvtColor(Images[0], cv2.COLOR_BGR2GRAY)
-            LastGrayImage = cv2.cvtColor(Images[len(Images)-1], cv2.COLOR_BGR2GRAY)
-            #varGoodPoints =np.array(varGoodPoints)
-            #varFarwordPoints = np.array(varFarwordPoints)
-
-            keyPoints_Good= self.KeyPoints(varGoodPoints)
-            keyPoints_Farword= self.KeyPoints(varFarwordPoints)
-            #print('')
-
-            Goodkp,GoodptsDes = orb.compute(FirstGrayImage,keyPoints_Good)
-            Farwordkp,FarwordptsDes = orb.compute(LastGrayImage,keyPoints_Farword)
-            #print(np.all(Goodkp==keyPoints_Good))
-            #print('len of kp' ,Goodkp[0], 'len of des' , len(GoodptsDes[0]))
-            t=0
-            FinalGoodpts=[]
-            while(t<=len(varGoodPoints)-1):
-                gddes_magnitude = np.linalg.norm(GoodptsDes[t])
-                if(gddes_magnitude==0):
-                    gddes_magnitude=0.00001
-                gdpt_des = (np.divide(GoodptsDes[t],gddes_magnitude))
-
-
-                farworddes_magnitude = np.linalg.norm(FarwordptsDes[t])
-                if(farworddes_magnitude==0):
-                    farworddes_magnitude=0.00001
-                farword_des = (np.divide(FarwordptsDes[t],farworddes_magnitude))
-
-                gdpt_des = np.array(gdpt_des)
-                farword_des = np.array(farword_des)
-
-
-                #print('points shape', gdpt_des.shape, 'des shape',farword_des.shape)
-                product = np.dot(gdpt_des,farword_des)
-                if(product>=0.923):
-                    FinalGoodpts.append(varGoodPoints[t])
-                print('ssd of counter ', t , 'is ',product)
-
-                t=t+1
-            return FinalGoodpts
+    def GoodPoints(self,FirstImagePoints,FarwordPoints,BackwardPoints,Images, Threshold, des_phi=0.3, method ='ssd'):
 
         if(method=='ssd'):
             j=0
