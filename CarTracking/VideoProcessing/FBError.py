@@ -188,7 +188,7 @@ class FBError:
             #print('previousImg',previousImg)
             nextImg = cv2.cvtColor(Images[next], cv2.COLOR_BGR2GRAY)
             p1, st, err = cv2.calcOpticalFlowPyrLK(previousImg,nextImg, PreviousPoints.astype(np.float32), None, **lk_params)
-            if(c==len(Images)-2):
+            if(c==len(Images)-1):
                 #print('Points before Zero Forward Flow' , len(p1))
                 p1,FirstImagePoints = self.CalculateZeroFlow(p1,FirstImagePoints,4)
                 #print('Points after Zero Forward Flow' , len(p1))
@@ -394,15 +394,7 @@ class FBError:
 
 
 
-    def KeyPoints(self,Points, size=1):
-        keypoints=[]
 
-        #print('in function',Points[0][0])
-        for pt in Points:
-            keypt = cv2.KeyPoint(pt[0], pt[1], size)
-            keypoints.append(keypt)
-
-        return keypoints
 
     def FlowPoints(self,GoodPoints,CurrentImagePath,NextImagePath):
         lk_params = dict( winSize  = (10,10),

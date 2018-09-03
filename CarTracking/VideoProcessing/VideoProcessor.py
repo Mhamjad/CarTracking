@@ -286,20 +286,19 @@ class VideoProcessor:
         #sci.savemat(newpath, mdict={str(number): Array})
 
     def DrawCirclesofFarwordPts(self,Points,Image,number):
-        Images = cv2.imread(Image,1)
+
         a =0;
         while(a<len(Points)-1):
-            Images = cv2.circle(Images,(Points[a][0],Points[a][1]), 1, (0,0,255), 1)
+            Images = cv2.circle(Image,(Points[a][0],Points[a][1]), 1, (0,0,255), 1)
             a=a+1
 
         name = '/home/isam/HazenWork-Hasnain/Sample2_GdPts/25Frame/' + str(number) +'Acircle.png'
         cv2.imwrite(name,Images)
 
     def DrawCirclesofBackwordPts(self,Points,Image,number):
-        Images = cv2.imread(Image,1)
         a =0;
         while(a<len(Points)-1):
-            Images = cv2.circle(Images,(Points[a][0],Points[a][1]), 1, (0,0,255), 1)
+            Images = cv2.circle(Image,(Points[a][0],Points[a][1]), 1, (0,0,255), 1)
             a=a+1
 
         name = '/home/isam/HazenWork-Hasnain/Sample2_GdPts/25Frame/' + str(number) +'Bcircle.png'
