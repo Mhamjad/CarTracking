@@ -35,7 +35,7 @@ class Tracker:
         detector = Detector('/home/isam/HazenWork-Hasnain/PycharmProjects/CarTrackingV2/Detector/Gate_90.6.pth')
         c=0
         frame_checker =0
-        while(image_counter < 9):
+        while(image_counter < len(imagespath)-1):
             print('working on image number ',image_counter)
 
             ## get number of frames of given interval size

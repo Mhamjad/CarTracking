@@ -27,15 +27,16 @@ class RansacCalculations:
             if(len(temp_inlairs)>=len(inlairs)):
 
                 inlairs= temp_inlairs
-                if(method=='median'):
-                    norm_inlairs = np.linalg.norm(inlairs,2,1)
-                    norm_median = np.median(norm_inlairs)
-                    flowpoint = norm_median * hypothesis
-                if(method == 'besthypothesis'):
-                    flowpoint = flowpoints[r]
+
+            if(method=='median'):
+                norm_inlairs = np.linalg.norm(inlairs,2,1)
+                norm_median = np.median(norm_inlairs)
+                flowpoint = norm_median * hypothesis
+            if(method == 'besthypothesis'):
+                flowpoint = flowpoints[r]
 
 
-
+        print('len of inlairs', len(inlairs))
         return flowpoint
 
 

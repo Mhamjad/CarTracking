@@ -273,4 +273,44 @@ class VideoProcessor:
         #name = '/media/isam/CE0A03DD0A03C187/Hasnain-Hazenwork/Results4/' + str(number) +'.png'
         cv2.imwrite(name,img)
 
+    def DrawCirclesofPtstags2(self,Points,image,number,tag):
+
+        img = image
+        a =0;
+        while(a<len(Points)):
+            img = cv2.circle(img,(int(Points[0]),int(Points[1])), 2, (0,255,0), -1)
+            a=a+1
+
+        #name = '/home/isam/HazenWork-Hasnain/Detected/' + str(number) + tag +'.png'
+        name = '/media/isam/CE0A03DD0A03C187/Hasnain-Hazenwork/Results/DescriptorMatcherPts/' + str(number) +'.png'
+        #name = '/media/isam/CE0A03DD0A03C187/Hasnain-Hazenwork/Results/DistanceThresholdPts/' + str(number) +'.png'
+
+        cv2.imwrite(name,img)
+    def draw_rectangles_list(self,box,image,number,color='red'):
+
+        if(color=='blue'):
+            color_value =(255,44,66)
+        if(color=='green'):
+            color_value = (0,255,0)
+        if(color=='red'):
+            color_value = (0,0,255)
+
+
+        if(len(box)==1 and box[0]== None):
+            pass
+        else:
+
+            counter =0
+            while(counter<=len(box)-1):
+                #print('boxes',box[counter])
+                if(box[counter]==None or box[counter]==None):
+                    pass
+                else:
+                    image=cv2.rectangle(image,(box[counter][0],box[counter][1]),(box[counter][2],box[counter][3]),color_value,3)
+                counter=counter+1
+            #name = '/home/isam/HazenWork-Hasnain/Detected/' + str(number) +'.png'
+            name = '/media/isam/CE0A03DD0A03C187/Hasnain-Hazenwork/Results/DescriptorMatcherPts/' + str(number) +'.png'
+            #name = '/media/isam/CE0A03DD0A03C187/Hasnain-Hazenwork/Results/DistanceThresholdPts/' + str(number) +'.png'
+
+            cv2.imwrite(name,image)
 
